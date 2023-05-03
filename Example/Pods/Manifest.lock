@@ -1,0 +1,27 @@
+PODS:
+  - MarkdownKit (0.0.1):
+    - MarkdownKit/CAtomic (= 0.0.1)
+    - MarkdownKit/cmark-gfm (= 0.0.1)
+    - MarkdownKit/cmark-gfm-extensions (= 0.0.1)
+    - MarkdownKit/Markdown (= 0.0.1)
+  - MarkdownKit/CAtomic (0.0.1)
+  - MarkdownKit/cmark-gfm (0.0.1)
+  - MarkdownKit/cmark-gfm-extensions (0.0.1)
+  - MarkdownKit/Markdown (0.0.1):
+    - MarkdownKit/CAtomic
+    - MarkdownKit/cmark-gfm
+    - MarkdownKit/cmark-gfm-extensions
+
+DEPENDENCIES:
+  - MarkdownKit (from `../MarkdownKit.podspec`)
+
+EXTERNAL SOURCES:
+  MarkdownKit:
+    :path: "../MarkdownKit.podspec"
+
+SPEC CHECKSUMS:
+  MarkdownKit: b63fd3a0c671a7f9b1109f286e40bcb81a71eea9
+
+PODFILE CHECKSUM: bb411c2fe47d8b1da4758a2b0f381c2e3417658a
+
+COCOAPODS: 1.11.2

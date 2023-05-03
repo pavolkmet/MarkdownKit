@@ -1,0 +1,73 @@
+{
+  "name": "MarkdownKit",
+  "version": "0.0.1",
+  "summary": "A Swift package for parsing, building, editing, and analyzing Markdown documents.",
+  "description": "Swift Markdown is a Swift package for parsing, building, editing, and analyzing Markdown documents.\n\nThe parser is powered by GitHub-flavored Markdown's cmark-gfm implementation, so it follows the spec closely.\nAs the needs of the community change, the effective dialect implemented by this library may change.\n\nThe markup tree provided by this package is comprised of immutable/persistent, thread-safe, copy-on-write value types that only copy substructure that has changed. \nOther examples of the main strategy behind this library can be seen in Swift's lib/Syntax and its Swift bindings, SwiftSyntax.",
+  "homepage": "https://github.com/pavolkmet/MarkdownKit",
+  "license": {
+    "type": "MIT",
+    "file": "FILE_LICENSE"
+  },
+  "authors": {
+    "Pavol Kmet": "pavolkmet@icloud.com"
+  },
+  "social_media_url": "https://twitter.com/PavolKmet",
+  "platforms": {
+    "ios": "15.0"
+  },
+  "source": {
+    "git": "https://github.com/pavolkmet/PannarioKit-iOS.git",
+    "tag": "0.0.1"
+  },
+  "preserve_paths": "Sources/MarkdownKit/**/*",
+  "source_files": "Sources/MarkdownKit/*{.c,.h,.swift}",
+  "subspecs": [
+    {
+      "name": "Markdown",
+      "preserve_paths": "Sources/Markdown/**/*",
+      "source_files": "Sources/Markdown/**/*.swift",
+      "dependencies": {
+        "MarkdownKit/CAtomic": [
+
+        ],
+        "MarkdownKit/cmark-gfm": [
+
+        ],
+        "MarkdownKit/cmark-gfm-extensions": [
+
+        ]
+      }
+    },
+    {
+      "name": "CAtomic",
+      "source_files": "Sources/CAtomic/**/*{.c,.h}",
+      "preserve_paths": "Sources/CAtomic/**/*",
+      "public_header_files": "Sources/CAtomic/include/*.h"
+    },
+    {
+      "name": "cmark-gfm",
+      "source_files": "Sources/cmark-gfm/**/*{.c,.h}",
+      "preserve_paths": "Sources/cmark-gfm/**/*",
+      "public_header_files": "Sources/cmark-gfm/include/*.h",
+      "exclude_files": [
+        "Sources/cmark-gfm/scanners.re",
+        "Sources/cmark-gfm/libcmark-gfm.pc.in",
+        "Sources/cmark-gfm/config.h.in",
+        "Sources/cmark-gfm/CMakeLists.txt",
+        "Sources/cmark-gfm/cmark-gfm_version.h.in",
+        "Sources/cmark-gfm/case_fold_switch.inc",
+        "Sources/cmark-gfm/entities.inc"
+      ]
+    },
+    {
+      "name": "cmark-gfm-extensions",
+      "source_files": "Sources/cmark-gfm-extensions/**/*{.c,.h}",
+      "preserve_paths": "Sources/cmark-gfm-extensions/**/*",
+      "public_header_files": "Sources/cmark-gfm-extensions/include/*.h",
+      "exclude_files": [
+        "Sources/cmark-gfm-extensions/CMakeLists.txt",
+        "Sources/cmark-gfm-extensions/ext_scanners.re"
+      ]
+    }
+  ]
+}
