@@ -90,10 +90,6 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-#  spec.source_files  = "Classes", "Classes/**/*.{h,m}"
-#  spec.exclude_files = "Classes/Exclude"
-#  $(PODS_TARGET_SRCROOT)/Sources/MarkdownKit
-#  spec.pod_target_xcconfig = { 'SWIFT_INCLUDE_PATHS' => '$(PODS_ROOT)/MarkdownKit/Sources/MarkdownKit $(PODS_TARGET_SRCROOT)/MarkdownKit/Sources/MarkdownKit' }
   spec.preserve_paths = "Sources/MarkdownKit/**/*"
   spec.source_files = 'Sources/MarkdownKit/*{.c,.h,.swift}'
 
