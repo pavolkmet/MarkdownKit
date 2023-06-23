@@ -90,8 +90,18 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.preserve_paths = "Sources/MarkdownKit/**/*"
-  spec.source_files = 'Sources/MarkdownKit/*{.c,.h,.swift}'
+  # spec.preserve_paths = "Sources/MarkdownKit/**/*"
+  # spec.source_files = 'Sources/MarkdownKit/**/*{.c,.h,.swift}'
+
+  spec.default_subspecs = 'Core'
+
+  spec.subspec 'Core' do |sp|
+    
+    sp.preserve_paths = "Sources/Core/**/*"
+    sp.source_files = 'Sources/Core/**/*.swift'
+    sp.dependency 'MarkdownKit/Markdown'
+    
+  end
 
   spec.subspec 'Markdown' do |sp|
     

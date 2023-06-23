@@ -1,12 +1,11 @@
 PODS:
   - MarkdownKit (0.0.1):
-    - MarkdownKit/CAtomic (= 0.0.1)
-    - MarkdownKit/cmark-gfm (= 0.0.1)
-    - MarkdownKit/cmark-gfm-extensions (= 0.0.1)
-    - MarkdownKit/Markdown (= 0.0.1)
+    - MarkdownKit/Core (= 0.0.1)
   - MarkdownKit/CAtomic (0.0.1)
   - MarkdownKit/cmark-gfm (0.0.1)
   - MarkdownKit/cmark-gfm-extensions (0.0.1)
+  - MarkdownKit/Core (0.0.1):
+    - MarkdownKit/Markdown
   - MarkdownKit/Markdown (0.0.1):
     - MarkdownKit/CAtomic
     - MarkdownKit/cmark-gfm
@@ -20,7 +19,7 @@ EXTERNAL SOURCES:
     :path: "../MarkdownKit.podspec"
 
 SPEC CHECKSUMS:
-  MarkdownKit: b63fd3a0c671a7f9b1109f286e40bcb81a71eea9
+  MarkdownKit: 3e7e01b0d5d7d6089c39884f8b6decbae5a0233c
 
 PODFILE CHECKSUM: bb411c2fe47d8b1da4758a2b0f381c2e3417658a
 

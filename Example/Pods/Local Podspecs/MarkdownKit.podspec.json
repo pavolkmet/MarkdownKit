@@ -19,9 +19,18 @@
     "git": "https://github.com/pavolkmet/PannarioKit-iOS.git",
     "tag": "0.0.1"
   },
-  "preserve_paths": "Sources/MarkdownKit/**/*",
-  "source_files": "Sources/MarkdownKit/*{.c,.h,.swift}",
+  "default_subspecs": "Core",
   "subspecs": [
+    {
+      "name": "Core",
+      "preserve_paths": "Sources/Core/**/*",
+      "source_files": "Sources/Core/**/*.swift",
+      "dependencies": {
+        "MarkdownKit/Markdown": [
+
+        ]
+      }
+    },
     {
       "name": "Markdown",
       "preserve_paths": "Sources/Markdown/**/*",

@@ -73,11 +73,11 @@ final class MarkdownLabel: UILabel {
         guard isUserInteractionEnabled else {
             return super.hitTest(point, with: event)
         }
-        /// Pass touches that are not links!
+        debugPrint(#function, point)
         let glyphIndex = layoutManager.glyphIndex(for: point, in: textContainer)
         /// Ensure the glyphIndex actually matches the point and isn't just the closest glyph to the point
         let glyphRect = layoutManager.boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1), in: textContainer)
-
+        
         guard glyphIndex < textStorage.length else {
             return super.hitTest(point, with: event)
         }

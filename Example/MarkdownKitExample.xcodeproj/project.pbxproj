@@ -13,7 +13,6 @@
 		BCE385472A02D72D00500934 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCE385462A02D72D00500934 /* Assets.xcassets */; };
 		BCE3854A2A02D72D00500934 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCE385492A02D72D00500934 /* Preview Assets.xcassets */; };
 		BCE3F0282A02ED22002F7A46 /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE3F0272A02ED22002F7A46 /* MarkdownLabel.swift */; };
-		BCE3F02A2A02ED55002F7A46 /* MarkdownMarkupVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE3F0292A02ED55002F7A46 /* MarkdownMarkupVisitor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +25,6 @@
 		BCE385462A02D72D00500934 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BCE385492A02D72D00500934 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BCE3F0272A02ED22002F7A46 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
-		BCE3F0292A02ED55002F7A46 /* MarkdownMarkupVisitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownMarkupVisitor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +79,6 @@
 			children = (
 				BCE3F0262A02ED17002F7A46 /* View */,
 				BCE385422A02D72D00500934 /* MarkdownKitExampleApp.swift */,
-				BCE385442A02D72D00500934 /* ContentView.swift */,
 				BCE385462A02D72D00500934 /* Assets.xcassets */,
 				BCE385482A02D72D00500934 /* Preview Content */,
 				BCE3F0272A02ED22002F7A46 /* MarkdownLabel.swift */,
@@ -100,7 +97,7 @@
 		BCE3F0262A02ED17002F7A46 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				BCE3F0292A02ED55002F7A46 /* MarkdownMarkupVisitor.swift */,
+				BCE385442A02D72D00500934 /* ContentView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -220,7 +217,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCE385452A02D72D00500934 /* ContentView.swift in Sources */,
-				BCE3F02A2A02ED55002F7A46 /* MarkdownMarkupVisitor.swift in Sources */,
 				BCE385432A02D72D00500934 /* MarkdownKitExampleApp.swift in Sources */,
 				BCE3F0282A02ED22002F7A46 /* MarkdownLabel.swift in Sources */,
 			);
