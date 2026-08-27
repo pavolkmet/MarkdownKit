@@ -21,7 +21,7 @@ Add MarkdownKit through Swift Package Manager:
 dependencies: [
     .package(
         url: "https://github.com/pavolkmet/MarkdownKit.git",
-        from: "1.0.0"
+        from: "1.1.0"
     ),
 ]
 ```
@@ -37,7 +37,51 @@ Then add its single product to your target:
 )
 ```
 
-## SwiftUI quick start
+## Parse once in response models
+
+`MarkdownDocument` is a presentation-independent, `Codable`, and `Sendable` representation of
+parsed Markdown. A response model can use it directly when the server value is a Markdown string:
+
+```swift
+import MarkdownKit
+
+struct PostResponse: Decodable, Sendable {
+    let text: MarkdownDocument
+}
+```
+
+Given this response:
+
+```json
+{
+  "text": "Hello **world** and visit #Hornet"
+}
+```
+
+decoding parses the Markdown exactly once. Decode away from the main actor when a response contains
+enough Markdown to justify background work:
+
+```swift
+let response = try await Task.detached {
+    try JSONDecoder().decode(PostResponse.self, from: data)
+}.value
+```
+
+The parsed response can cross concurrency boundaries and render normally in SwiftUI:
+
+```swift
+MarkdownText(document: response.text)
+```
+
+`MarkdownDocument` retains the original source for lossless Codable round trips, while its parsed
+tree contains no fonts, colors, or other visual attributes. Rendering therefore skips Markdown
+parsing but still applies the current appearance, element configuration, and application visitors.
+
+Hashtags and mentions remain ordinary text in the Markdown tree because their meaning belongs to
+the application. A custom visitor detects them after the cached document is rendered, allowing the
+application to choose their URL and appearance without reparsing the Markdown source.
+
+## SwiftUI rendering
 
 `MarkdownText` works out of the box with Dynamic Type heading fonts, semantic strong and emphasis
 styles, accent-colored links, line breaks, and literal list markers:
@@ -56,13 +100,12 @@ struct ArticleView: View {
 }
 ```
 
-You can also render a document that was already parsed by `swift-markdown`:
+You can also create and reuse a document explicitly:
 
 ```swift
-import Markdown
 import MarkdownKit
 
-let document = Document(parsing: "# Parsed once")
+let document = MarkdownDocument(parsing: "# Parsed once")
 let view = MarkdownText(document: document)
 ```
 
@@ -137,8 +180,41 @@ MarkdownText(text: text, elements: elements)
 The last configuration for the same element wins. An omitted or disabled visitor flattens that
 node into readable output; it does not discard the node’s text.
 
-SwiftUI environment modifiers are applied after the initializer elements, which makes parent-level
-configuration straightforward:
+## SwiftUI environment configuration
+
+MarkdownKit provides the following SwiftUI modifiers. They are inherited by descendant
+`MarkdownText` views and are applied after the elements passed to the initializer.
+
+| Modifier | Purpose |
+| --- | --- |
+| `.markdownAppearance(_:)` | Sets the shared appearance used by elements configured with `.default`. |
+| `.markdownElements(_:)` | Appends several element overrides. |
+| `.markdownElement(_:)` | Appends one override for any `MarkdownElement` case. |
+| `.markdownText(_:)` | Configures the base text visitor or appearance. |
+| `.markdownLink(_:)` | Configures Markdown and detected unmarked links. |
+| `.markdownStrong(_:)` | Configures strongly emphasized text. |
+| `.markdownEmphasis(_:)` | Configures emphasized text. |
+| `.markdownHeading(_:)` | Configures all heading levels. |
+| `.markdownStrikethrough(_:)` | Configures strikethrough text. |
+| `.markdownOrderedList(_:)` | Configures ordered-list markers and layout. |
+| `.markdownUnorderedList(_:)` | Configures unordered-list markers and layout. |
+| `.markdownCustomVisitor(_:)` | Appends an application-owned final visitor, such as a hashtag visitor. |
+
+Every element not represented by a typed convenience modifier remains available through
+`.markdownElement(_:)` or `.markdownElements(_:)`. This includes documents, block quotes, code,
+paragraphs, directives, images, line breaks, tables, Doxygen nodes, and every other
+`MarkdownElement` case.
+
+The corresponding public environment values are available when building a custom SwiftUI
+container:
+
+| Environment value | Value |
+| --- | --- |
+| `\.markdownAppearance` | The inherited `MarkdownAppearance`. |
+| `\.markdownElementOverrides` | The ordered array of inherited `MarkdownElement` overrides. |
+
+Parent-level configuration can combine shared appearance, focused overrides, and an
+application-owned visitor:
 
 ```swift
 MarkdownText(text: text)
@@ -147,8 +223,16 @@ MarkdownText(text: text)
     .markdownCustomVisitor(MyHashtagVisitor())
 ```
 
-Use `.markdownElement(...)` for any element, `.markdownElements(...)` for several, or the typed
-modifiers for text, links, strong, emphasis, headings, strikethrough, and lists.
+Because `MarkdownText` produces a native SwiftUI `Text`, standard SwiftUI behavior remains
+available as well:
+
+| SwiftUI API | Typical use |
+| --- | --- |
+| `.font(_:)`, `.foregroundStyle(_:)`, `.dynamicTypeSize(_:)` | Supplies inherited text defaults and Dynamic Type limits. Explicit per-range Markdown attributes take precedence. |
+| `.multilineTextAlignment(_:)`, `.lineSpacing(_:)` | Controls paragraph layout. |
+| `.lineLimit(_:)`, `.truncationMode(_:)`, `.minimumScaleFactor(_:)` | Controls constrained text presentation. |
+| `.textSelection(_:)` | Enables copying when required; it is not needed for link interaction. |
+| `.environment(\.openURL, ...)` | Handles taps on Markdown, unmarked, hashtag, mention, and application-route links. |
 
 ## Foundation rendering
 
@@ -166,11 +250,15 @@ let attributedString = renderer.attributedString(
 )
 ```
 
-The renderer also accepts a `Markdown.Document`:
+The renderer also accepts a reusable `MarkdownDocument`:
 
 ```swift
+let document = MarkdownDocument(parsing: "# Parsed once")
 let attributedString = renderer.attributedString(from: document)
 ```
+
+For direct interoperability with `swift-markdown`, the renderer and `MarkdownText` also accept a
+raw `Markdown.Document`.
 
 `MarkdownRenderer` creates fresh traversal state for each render, so mutable value-type visitor
 state does not leak between calls.
@@ -289,6 +377,49 @@ swift test
 The suite covers every default visitor, element enable/disable behavior, appearance precedence,
 custom visitors, malformed and generated Markdown, Unicode, link detection, traversal isolation,
 concurrent rendering, and performance smoke tests.
+
+### Performance reference
+
+Run the optimized performance suite with:
+
+```sh
+swift test -c release --filter MarkdownPerformanceTests
+```
+
+The suite measures clock time and memory over five samples. These release-build reference results
+were recorded on August 27, 2026, using an 18-core Apple M5 Max MacBook Pro with 48 GB of memory
+and macOS 26.5.2.
+
+The paired tests compare parsing and rendering a source string on every call with rendering an
+equivalent `MarkdownDocument` that was parsed before measurement:
+
+| Workload | Input size | Renders per sample | String per render | Parsed document per render | Reduction |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Short feed text | 46 characters | 300 | 0.038 ms | 0.034 ms | 12.6% |
+| Medium Markdown text | 2,380 characters | 20 | 1.41 ms | 1.28 ms | 9.1% |
+| Long Markdown document | 37,228 characters | 1 | 18.45 ms | 16.73 ms | 9.3% |
+
+Additional focused workloads provide these reference values:
+
+| Workload | Items per sample | Average per sample | Average per item |
+| --- | ---: | ---: | ---: |
+| Feed corpus | 300 | 13.51 ms | 0.045 ms |
+| Unmarked-link detection | 300 | 13.05 ms | 0.044 ms |
+| Nested-list corpus | 300 | 18.92 ms | 0.063 ms |
+| Custom visitor | 300 | 13.80 ms | 0.046 ms |
+
+Short and medium workloads run repeatedly inside each sample so their timings are large enough to
+measure reliably. The long workload exercises headings, inline styles, marked and unmarked links,
+block quotes, and ordered lists across 120 sections.
+
+Pre-parsing removes repeated parser work, but traversal and attributed-string construction still
+run for the current appearance and visitors. The primary application benefit is moving parsing to
+response decoding away from the main actor and never repeating that work during SwiftUI updates.
+
+These numbers are a reproducible development-machine reference, not an iPhone performance
+guarantee. Device, OS version, build settings, input shape, enabled visitors, and attributed-string
+attributes can change the result. For application validation, measure a release build on the target
+iPhone with the Markdown content and surrounding UI used by the application.
 
 ## License
 

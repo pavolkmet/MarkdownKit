@@ -45,6 +45,11 @@ public struct MarkdownRenderer {
         attributedString(from: Document(parsing: text))
     }
 
+    /// Renders a reusable document without parsing its source again.
+    public func attributedString(from document: MarkdownDocument) -> AttributedString {
+        attributedString(from: document.document)
+    }
+
     /// Renders an already parsed Markdown document.
     public func attributedString(from document: Document) -> AttributedString {
         renderDocument(document)

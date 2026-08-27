@@ -16,37 +16,39 @@ struct ContentView: View {
         .custom(MarkdownExampleHashtagVisitor()),
     ]
 
-    private let markdown = """
-    # MarkdownKit
+    private let document = MarkdownDocument(
+        parsing: """
+        # MarkdownKit
 
-    Render Markdown as a native SwiftUI `Text` view.
+        Render Markdown as a native SwiftUI `Text` view.
 
-    Use **strong**, *emphasis*, and ~~strikethrough~~ with system styling.
+        Use **strong**, *emphasis*, and ~~strikethrough~~ with system styling.
 
-    ## Links
+        ## Links
 
-    Open a [Markdown link](https://swift.org) or an unmarked link such as www.apple.com.
+        Open a [Markdown link](https://swift.org) or an unmarked link such as www.apple.com.
 
-    ## Lists
+        ## Lists
 
-    - A simple list item
-    - A **formatted item**
-      - A nested item
+        - A simple list item
+        - A **formatted item**
+          - A nested item
 
-    1. First ordered item
-    2. Second ordered item
+        1. First ordered item
+        2. Second ordered item
 
-    ## Custom visitors
+        ## Custom visitors
 
-    The example visitor adds app-owned links and styling to #Swift and #Markdown.
-    """
+        The example visitor adds app-owned links and styling to #Swift and #Markdown.
+        """
+    )
 
     // MARK: - View
 
     var body: some View {
         NavigationView {
             ScrollView {
-                MarkdownText(text: markdown, elements: elements)
+                MarkdownText(document: document, elements: elements)
                     .markdownAppearance(.swiftUI)
                     .environment(\.openURL, OpenURLAction { url in
                         debugPrint(url)

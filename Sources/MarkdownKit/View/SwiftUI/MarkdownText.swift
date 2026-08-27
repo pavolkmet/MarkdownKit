@@ -26,6 +26,7 @@ public struct MarkdownText: View {
     private enum Content {
         case text(String)
         case document(Document)
+        case markdownDocument(MarkdownDocument)
     }
 
     // MARK: - Properties - Private
@@ -44,7 +45,7 @@ public struct MarkdownText: View {
     ///   - text: The Markdown source to render.
     ///   - elements: The baseline element configurations. Later environment overrides take precedence.
     public init(text: String, elements: [MarkdownElement] = MarkdownElement.defaults) {
-        content = .text(text)
+        self.content = .text(text)
         self.elements = elements
     }
 
@@ -54,7 +55,17 @@ public struct MarkdownText: View {
     ///   - document: The parsed Markdown document to render.
     ///   - elements: The baseline element configurations. Later environment overrides take precedence.
     public init(document: Document, elements: [MarkdownElement] = MarkdownElement.defaults) {
-        content = .document(document)
+        self.content = .document(document)
+        self.elements = elements
+    }
+
+    /// Creates a view that renders a reusable MarkdownKit document without parsing again.
+    ///
+    /// - Parameters:
+    ///   - document: The reusable document to render with the current environment appearance.
+    ///   - elements: The baseline element configurations. Later environment overrides take precedence.
+    public init(document: MarkdownDocument, elements: [MarkdownElement] = MarkdownElement.defaults) {
+        self.content = .markdownDocument(document)
         self.elements = elements
     }
 
@@ -70,6 +81,8 @@ public struct MarkdownText: View {
             case .text(let text):
                 return renderer.attributedString(from: text)
             case .document(let document):
+                return renderer.attributedString(from: document)
+            case .markdownDocument(let document):
                 return renderer.attributedString(from: document)
             }
         }()

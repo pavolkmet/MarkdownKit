@@ -403,9 +403,10 @@ final class MarkdownAttributedMarkupVisitorTests: XCTestCase {
             elements: MarkdownElement.defaults + [.custom(TestHashtagVisitor())],
             appearance: enabledAppearance()
         )
-        let result = renderer.attributedString(
-            from: "Visit #Swift and [#Existing](https://example.com/original)"
+        let document = MarkdownDocument(
+            parsing: "Visit #Swift and [#Existing](https://example.com/original)"
         )
+        let result = renderer.attributedString(from: document)
 
         XCTAssertEqual(
             links(in: result).map(\.url.absoluteString),

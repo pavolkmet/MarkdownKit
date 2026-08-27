@@ -5,8 +5,8 @@
 Open the project and run the `MarkdownKitExample` scheme on an iOS 15 or later
 Simulator. The app immediately renders a native `MarkdownText` view.
 
-The sample demonstrates text formatting, Markdown and unmarked links, nested lists,
-SwiftUI appearance configuration, and an app-owned hashtag visitor.
+The sample demonstrates a reusable `MarkdownDocument`, text formatting, Markdown and unmarked
+links, nested lists, SwiftUI appearance configuration, and an app-owned hashtag visitor.
 
 The example mirrors the package structure:
 

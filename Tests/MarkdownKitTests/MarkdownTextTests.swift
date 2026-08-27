@@ -12,6 +12,10 @@ final class MarkdownTextTests: XCTestCase {
     func testTextAndDocumentInitializersAcceptElementBaselines() {
         _ = MarkdownText(text: "**Text**", elements: [.strong(.default)])
         _ = MarkdownText(
+            document: MarkdownDocument(parsing: "[#Reusable](https://example.com)"),
+            elements: [.link(.default)]
+        )
+        _ = MarkdownText(
             document: Document(parsing: "[Link](https://example.com)"),
             elements: [.link(.default)]
         )
@@ -24,6 +28,10 @@ final class MarkdownTextTests: XCTestCase {
         XCTAssertEqual(
             renderer.attributedString(from: source),
             renderer.attributedString(from: Document(parsing: source))
+        )
+        XCTAssertEqual(
+            renderer.attributedString(from: source),
+            renderer.attributedString(from: MarkdownDocument(parsing: source))
         )
     }
 
