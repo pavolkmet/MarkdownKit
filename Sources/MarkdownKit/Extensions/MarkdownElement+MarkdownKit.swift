@@ -43,6 +43,32 @@ extension MarkdownElement {
             doxygenReturns: nil
         )
 
+        apply(elements, to: &visitors, appearance: appearance)
+        return visitors
+    }
+
+    static func visitors(defaultElementsOverriddenBy overrides: [MarkdownElement], appearance: MarkdownAppearance) -> MarkdownMarkupVisitors {
+        var visitors = defaultVisitors(appearance: appearance)
+        apply(overrides, to: &visitors, appearance: appearance)
+        return visitors
+    }
+
+    // MARK: - Helper Methods - Private
+
+    private static func defaultVisitors(appearance: MarkdownAppearance) -> MarkdownMarkupVisitors {
+        MarkdownMarkupVisitors(
+            text: MarkdownDefaultTextVisitor(container: appearance.text.container),
+            link: MarkdownDefaultLinkVisitor(container: appearance.link.container),
+            strong: MarkdownDefaultStrongVisitor(container: appearance.strong.container),
+            emphasis: MarkdownDefaultEmphasisVisitor(container: appearance.emphasis.container),
+            heading: MarkdownDefaultHeadingVisitor(appearance: appearance.heading),
+            strikethrough: MarkdownDefaultStrikethroughVisitor(container: appearance.strikethrough.container),
+            orderedList: MarkdownDefaultOrderedListVisitor(appearance: appearance.orderedList),
+            unorderedList: MarkdownDefaultUnorderedListVisitor(appearance: appearance.unorderedList)
+        )
+    }
+
+    private static func apply(_ elements: [MarkdownElement], to visitors: inout MarkdownMarkupVisitors, appearance: MarkdownAppearance) {
         for element in elements {
             switch element {
             case .document(let configuration):
@@ -380,7 +406,5 @@ extension MarkdownElement {
                 visitors.custom.append(visitor)
             }
         }
-
-        return visitors
     }
 }

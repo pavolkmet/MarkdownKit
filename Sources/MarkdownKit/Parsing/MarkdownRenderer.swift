@@ -10,6 +10,22 @@ public struct MarkdownRenderer {
 
     // MARK: - Initialization - Public
 
+    /// Creates a renderer from the default elements and appearance.
+    public init() {
+        self.init(
+            defaultElementsOverriddenBy: [],
+            appearance: .default
+        )
+    }
+
+    /// Creates a renderer from the default elements and a shared appearance.
+    public init(appearance: MarkdownAppearance) {
+        self.init(
+            defaultElementsOverriddenBy: [],
+            appearance: appearance
+        )
+    }
+
     /// Creates a renderer from focused element decisions and shared appearances.
     public init(elements: [MarkdownElement] = MarkdownElement.defaults, appearance: MarkdownAppearance = .default) {
         self.init(
@@ -36,6 +52,17 @@ public struct MarkdownRenderer {
             var visitor = visitor
             return visitor.visit(document)
         }
+    }
+
+    // MARK: - Initialization - Internal
+
+    init(defaultElementsOverriddenBy overrides: [MarkdownElement], appearance: MarkdownAppearance) {
+        self.init(
+            visitors: MarkdownElement.visitors(
+                defaultElementsOverriddenBy: overrides,
+                appearance: appearance
+            )
+        )
     }
 
     // MARK: - Helper Methods - Public

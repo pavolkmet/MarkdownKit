@@ -42,6 +42,30 @@ final class MarkdownPerformanceTests: XCTestCase {
 
     // **MARK: - Tests**
 
+    func testDefaultRendererInitializationPerformance() {
+        var renderer: MarkdownRenderer?
+
+        measure(metrics: [XCTClockMetric(), XCTMemoryMetric()]) {
+            for _ in 0..<10_000 {
+                renderer = MarkdownRenderer()
+            }
+        }
+
+        XCTAssertNotNil(renderer)
+    }
+
+    func testExplicitDefaultElementsRendererInitializationPerformance() {
+        var renderer: MarkdownRenderer?
+
+        measure(metrics: [XCTClockMetric(), XCTMemoryMetric()]) {
+            for _ in 0..<10_000 {
+                renderer = MarkdownRenderer(elements: MarkdownElement.defaults)
+            }
+        }
+
+        XCTAssertNotNil(renderer)
+    }
+
     func testShortTextPerformance() {
         let renderer = MarkdownRenderer(appearance: enabledAppearance())
 

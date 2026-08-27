@@ -21,7 +21,7 @@ Add MarkdownKit through Swift Package Manager:
 dependencies: [
     .package(
         url: "https://github.com/pavolkmet/MarkdownKit.git",
-        from: "1.1.0"
+        from: "1.2.0"
     ),
 ]
 ```
@@ -407,6 +407,15 @@ Additional focused workloads provide these reference values:
 | Unmarked-link detection | 300 | 13.05 ms | 0.044 ms |
 | Nested-list corpus | 300 | 18.92 ms | 0.063 ms |
 | Custom visitor | 300 | 13.80 ms | 0.046 ms |
+
+Default renderer construction now creates the complete visitor set directly instead of resolving
+the `MarkdownElement.defaults` array one element at a time. Explicit element arrays retain their
+existing ordered override behavior:
+
+| Renderer construction | Initializations per sample | Average per sample | Average per renderer | Reduction |
+| --- | ---: | ---: | ---: | ---: |
+| Default elements | 10,000 | 13.60 ms | 0.0014 ms | 56.5% |
+| Explicit `MarkdownElement.defaults` | 10,000 | 31.31 ms | 0.0031 ms | — |
 
 Short and medium workloads run repeatedly inside each sample so their timings are large enough to
 measure reliably. The long workload exercises headings, inline styles, marked and unmarked links,

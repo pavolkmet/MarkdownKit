@@ -11,42 +11,44 @@ final class MarkdownElementTests: XCTestCase {
     func testDefaultsResolveMatchingVisitorForEverySupportedMarkdownType() {
         let visitors = MarkdownElement.visitors(from: MarkdownElement.defaults, appearance: .default)
 
-        assertVisitor(visitors.document, is: MarkdownDefaultDocumentVisitor.self)
-        assertVisitor(visitors.blockQuote, is: MarkdownDefaultBlockQuoteVisitor.self)
-        assertVisitor(visitors.codeBlock, is: MarkdownDefaultCodeBlockVisitor.self)
-        assertVisitor(visitors.customBlock, is: MarkdownDefaultCustomBlockVisitor.self)
-        assertVisitor(visitors.heading, is: MarkdownDefaultHeadingVisitor.self)
-        assertVisitor(visitors.thematicBreak, is: MarkdownDefaultThematicBreakVisitor.self)
-        assertVisitor(visitors.htmlBlock, is: MarkdownDefaultHTMLBlockVisitor.self)
-        assertVisitor(visitors.listItem, is: MarkdownDefaultListItemVisitor.self)
-        assertVisitor(visitors.orderedList, is: MarkdownDefaultOrderedListVisitor.self)
-        assertVisitor(visitors.unorderedList, is: MarkdownDefaultUnorderedListVisitor.self)
-        assertVisitor(visitors.paragraph, is: MarkdownDefaultParagraphVisitor.self)
-        assertVisitor(visitors.blockDirective, is: MarkdownDefaultBlockDirectiveVisitor.self)
-        assertVisitor(visitors.inlineCode, is: MarkdownDefaultInlineCodeVisitor.self)
-        assertVisitor(visitors.customInline, is: MarkdownDefaultCustomInlineVisitor.self)
-        assertVisitor(visitors.emphasis, is: MarkdownDefaultEmphasisVisitor.self)
-        assertVisitor(visitors.image, is: MarkdownDefaultImageVisitor.self)
-        assertVisitor(visitors.inlineHTML, is: MarkdownDefaultInlineHTMLVisitor.self)
-        assertVisitor(visitors.lineBreak, is: MarkdownDefaultLineBreakVisitor.self)
-        assertVisitor(visitors.link, is: MarkdownDefaultLinkVisitor.self)
-        assertVisitor(visitors.softBreak, is: MarkdownDefaultSoftBreakVisitor.self)
-        assertVisitor(visitors.strong, is: MarkdownDefaultStrongVisitor.self)
-        assertVisitor(visitors.text, is: MarkdownDefaultTextVisitor.self)
-        assertVisitor(visitors.strikethrough, is: MarkdownDefaultStrikethroughVisitor.self)
-        assertVisitor(visitors.symbolLink, is: MarkdownDefaultSymbolLinkVisitor.self)
-        assertVisitor(visitors.inlineAttributes, is: MarkdownDefaultInlineAttributesVisitor.self)
-        assertVisitor(visitors.table, is: MarkdownDefaultTableVisitor.self)
-        assertVisitor(visitors.tableHead, is: MarkdownDefaultTableHeadVisitor.self)
-        assertVisitor(visitors.tableBody, is: MarkdownDefaultTableBodyVisitor.self)
-        assertVisitor(visitors.tableRow, is: MarkdownDefaultTableRowVisitor.self)
-        assertVisitor(visitors.tableCell, is: MarkdownDefaultTableCellVisitor.self)
-        assertVisitor(visitors.doxygenDiscussion, is: MarkdownDefaultDoxygenDiscussionVisitor.self)
-        assertVisitor(visitors.doxygenNote, is: MarkdownDefaultDoxygenNoteVisitor.self)
-        assertVisitor(visitors.doxygenAbstract, is: MarkdownDefaultDoxygenAbstractVisitor.self)
-        assertVisitor(visitors.doxygenParameter, is: MarkdownDefaultDoxygenParameterVisitor.self)
-        assertVisitor(visitors.doxygenReturns, is: MarkdownDefaultDoxygenReturnsVisitor.self)
-        XCTAssertTrue(visitors.custom.isEmpty)
+        assertDefaultVisitors(visitors)
+    }
+
+    func testDefaultOverridePathResolvesMatchingVisitorForEverySupportedMarkdownType() {
+        let visitors = MarkdownElement.visitors(
+            defaultElementsOverriddenBy: [],
+            appearance: .default
+        )
+
+        assertDefaultVisitors(visitors)
+    }
+
+    func testDefaultOverridePathMatchesExplicitDefaultElements() {
+        var appearance = MarkdownAppearance.default
+        appearance.text = MarkdownTextAppearance(
+            container: attributeContainer(PriorityTestAttribute.self, "text")
+        )
+        let overrides: [MarkdownElement] = [
+            .link(.disabled),
+            .strong(.appearance(MarkdownTextAppearance(
+                container: attributeContainer(PriorityTestAttribute.self, "strong")
+            ))),
+            .unorderedList(.appearance(MarkdownListAppearance(indentation: 4))),
+            .custom(AppendingVisitor(value: "-custom")),
+        ]
+        let source = "**Strong** [Link](https://example.com)\n\n- Parent\n  - Child"
+        let expected = MarkdownRenderer(
+            elements: MarkdownElement.defaults + overrides,
+            appearance: appearance
+        )
+        .attributedString(from: source)
+        let result = MarkdownRenderer(
+            defaultElementsOverriddenBy: overrides,
+            appearance: appearance
+        )
+        .attributedString(from: source)
+
+        XCTAssertEqual(result, expected)
     }
 
     // MARK: - Tests - Precedence
@@ -191,6 +193,45 @@ final class MarkdownElementTests: XCTestCase {
     }
 
     // MARK: - Helper Methods - Private
+
+    private func assertDefaultVisitors(_ visitors: MarkdownMarkupVisitors, file: StaticString = #filePath, line: UInt = #line) {
+        assertVisitor(visitors.document, is: MarkdownDefaultDocumentVisitor.self, file: file, line: line)
+        assertVisitor(visitors.blockQuote, is: MarkdownDefaultBlockQuoteVisitor.self, file: file, line: line)
+        assertVisitor(visitors.codeBlock, is: MarkdownDefaultCodeBlockVisitor.self, file: file, line: line)
+        assertVisitor(visitors.customBlock, is: MarkdownDefaultCustomBlockVisitor.self, file: file, line: line)
+        assertVisitor(visitors.heading, is: MarkdownDefaultHeadingVisitor.self, file: file, line: line)
+        assertVisitor(visitors.thematicBreak, is: MarkdownDefaultThematicBreakVisitor.self, file: file, line: line)
+        assertVisitor(visitors.htmlBlock, is: MarkdownDefaultHTMLBlockVisitor.self, file: file, line: line)
+        assertVisitor(visitors.listItem, is: MarkdownDefaultListItemVisitor.self, file: file, line: line)
+        assertVisitor(visitors.orderedList, is: MarkdownDefaultOrderedListVisitor.self, file: file, line: line)
+        assertVisitor(visitors.unorderedList, is: MarkdownDefaultUnorderedListVisitor.self, file: file, line: line)
+        assertVisitor(visitors.paragraph, is: MarkdownDefaultParagraphVisitor.self, file: file, line: line)
+        assertVisitor(visitors.blockDirective, is: MarkdownDefaultBlockDirectiveVisitor.self, file: file, line: line)
+        assertVisitor(visitors.inlineCode, is: MarkdownDefaultInlineCodeVisitor.self, file: file, line: line)
+        assertVisitor(visitors.customInline, is: MarkdownDefaultCustomInlineVisitor.self, file: file, line: line)
+        assertVisitor(visitors.emphasis, is: MarkdownDefaultEmphasisVisitor.self, file: file, line: line)
+        assertVisitor(visitors.image, is: MarkdownDefaultImageVisitor.self, file: file, line: line)
+        assertVisitor(visitors.inlineHTML, is: MarkdownDefaultInlineHTMLVisitor.self, file: file, line: line)
+        assertVisitor(visitors.lineBreak, is: MarkdownDefaultLineBreakVisitor.self, file: file, line: line)
+        assertVisitor(visitors.link, is: MarkdownDefaultLinkVisitor.self, file: file, line: line)
+        assertVisitor(visitors.softBreak, is: MarkdownDefaultSoftBreakVisitor.self, file: file, line: line)
+        assertVisitor(visitors.strong, is: MarkdownDefaultStrongVisitor.self, file: file, line: line)
+        assertVisitor(visitors.text, is: MarkdownDefaultTextVisitor.self, file: file, line: line)
+        assertVisitor(visitors.strikethrough, is: MarkdownDefaultStrikethroughVisitor.self, file: file, line: line)
+        assertVisitor(visitors.symbolLink, is: MarkdownDefaultSymbolLinkVisitor.self, file: file, line: line)
+        assertVisitor(visitors.inlineAttributes, is: MarkdownDefaultInlineAttributesVisitor.self, file: file, line: line)
+        assertVisitor(visitors.table, is: MarkdownDefaultTableVisitor.self, file: file, line: line)
+        assertVisitor(visitors.tableHead, is: MarkdownDefaultTableHeadVisitor.self, file: file, line: line)
+        assertVisitor(visitors.tableBody, is: MarkdownDefaultTableBodyVisitor.self, file: file, line: line)
+        assertVisitor(visitors.tableRow, is: MarkdownDefaultTableRowVisitor.self, file: file, line: line)
+        assertVisitor(visitors.tableCell, is: MarkdownDefaultTableCellVisitor.self, file: file, line: line)
+        assertVisitor(visitors.doxygenDiscussion, is: MarkdownDefaultDoxygenDiscussionVisitor.self, file: file, line: line)
+        assertVisitor(visitors.doxygenNote, is: MarkdownDefaultDoxygenNoteVisitor.self, file: file, line: line)
+        assertVisitor(visitors.doxygenAbstract, is: MarkdownDefaultDoxygenAbstractVisitor.self, file: file, line: line)
+        assertVisitor(visitors.doxygenParameter, is: MarkdownDefaultDoxygenParameterVisitor.self, file: file, line: line)
+        assertVisitor(visitors.doxygenReturns, is: MarkdownDefaultDoxygenReturnsVisitor.self, file: file, line: line)
+        XCTAssertTrue(visitors.custom.isEmpty, file: file, line: line)
+    }
 
     private func assertVisitor<Visitor>(_ visitor: Any?, is type: Visitor.Type, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(visitor is Visitor, "Expected \(Visitor.self), got \(String(describing: visitor))", file: file, line: line)

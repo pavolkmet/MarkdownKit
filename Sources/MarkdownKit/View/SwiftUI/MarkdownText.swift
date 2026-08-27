@@ -29,54 +29,95 @@ public struct MarkdownText: View {
         case markdownDocument(MarkdownDocument)
     }
 
+    // MARK: - Elements
+
+    private enum Elements {
+        case `default`
+        case explicit([MarkdownElement])
+    }
+
     // MARK: - Properties - Private
 
     @Environment(\.markdownAppearance) private var appearance
     @Environment(\.markdownElementOverrides) private var environmentElements
 
     private let content: Content
-    private let elements: [MarkdownElement]
+    private let elements: Elements
 
     // MARK: - Initialization - Public
 
-    /// Creates a view that parses and renders Markdown source text.
+    /// Creates a view that parses and renders Markdown source text with the default elements.
+    ///
+    /// - Parameter text: The Markdown source to render.
+    public init(text: String) {
+        self.content = .text(text)
+        self.elements = .default
+    }
+
+    /// Creates a view that parses and renders Markdown source text with explicit elements.
     ///
     /// - Parameters:
     ///   - text: The Markdown source to render.
     ///   - elements: The baseline element configurations. Later environment overrides take precedence.
     public init(text: String, elements: [MarkdownElement] = MarkdownElement.defaults) {
         self.content = .text(text)
-        self.elements = elements
+        self.elements = .explicit(elements)
     }
 
-    /// Creates a view that renders an already parsed Markdown document.
+    /// Creates a view that renders an already parsed Markdown document with the default elements.
+    ///
+    /// - Parameter document: The parsed Markdown document to render.
+    public init(document: Document) {
+        self.content = .document(document)
+        self.elements = .default
+    }
+
+    /// Creates a view that renders an already parsed Markdown document with explicit elements.
     ///
     /// - Parameters:
     ///   - document: The parsed Markdown document to render.
     ///   - elements: The baseline element configurations. Later environment overrides take precedence.
     public init(document: Document, elements: [MarkdownElement] = MarkdownElement.defaults) {
         self.content = .document(document)
-        self.elements = elements
+        self.elements = .explicit(elements)
     }
 
-    /// Creates a view that renders a reusable MarkdownKit document without parsing again.
+    /// Creates a view that renders a reusable MarkdownKit document with the default elements.
+    ///
+    /// - Parameter document: The reusable document to render with the current environment appearance.
+    public init(document: MarkdownDocument) {
+        self.content = .markdownDocument(document)
+        self.elements = .default
+    }
+
+    /// Creates a view that renders a reusable MarkdownKit document with explicit elements.
     ///
     /// - Parameters:
     ///   - document: The reusable document to render with the current environment appearance.
     ///   - elements: The baseline element configurations. Later environment overrides take precedence.
     public init(document: MarkdownDocument, elements: [MarkdownElement] = MarkdownElement.defaults) {
         self.content = .markdownDocument(document)
-        self.elements = elements
+        self.elements = .explicit(elements)
     }
 
     // MARK: - View
 
     public var body: some View {
         let string: AttributedString = {
-            let renderer = MarkdownRenderer(
-                elements: elements + environmentElements,
-                appearance: appearance
-            )
+            let renderer: MarkdownRenderer
+            switch elements {
+            case .default:
+                renderer = MarkdownRenderer(
+                    defaultElementsOverriddenBy: environmentElements,
+                    appearance: appearance
+                )
+            case .explicit(let values):
+                renderer = MarkdownRenderer(
+                    elements: values + environmentElements,
+                    appearance: appearance
+                )
+            }
+
             switch content {
             case .text(let text):
                 return renderer.attributedString(from: text)
