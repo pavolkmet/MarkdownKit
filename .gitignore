@@ -7,7 +7,12 @@
 
 ## Build generated
 build/
+.build/
 DerivedData
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
 
 ## Various settings
 *.pbxuser

@@ -1,5 +1,0 @@
-framework module cmark_gfm_extensions {
-    header "cmark-gfm-core-extensions.h"
-    header "extensions-export.h"
-    export *
-}
