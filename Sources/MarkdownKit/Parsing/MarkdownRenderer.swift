@@ -26,6 +26,23 @@ public struct MarkdownRenderer {
         )
     }
 
+    /// Creates a renderer from the default elements followed by ordered overrides.
+    ///
+    /// Use this initializer when the renderer should retain every standard Markdown behavior while
+    /// changing only selected elements. Later overrides for the same element take precedence.
+    ///
+    /// - Parameters:
+    ///   - overrides: Element configurations applied after the complete default element set.
+    ///   - appearance: Shared appearance used by elements configured with `.default`.
+    public init(defaultElementsOverriddenBy overrides: [MarkdownElement], appearance: MarkdownAppearance = .default) {
+        self.init(
+            visitors: MarkdownElement.visitors(
+                defaultElementsOverriddenBy: overrides,
+                appearance: appearance
+            )
+        )
+    }
+
     /// Creates a renderer from focused element decisions and shared appearances.
     public init(elements: [MarkdownElement] = MarkdownElement.defaults, appearance: MarkdownAppearance = .default) {
         self.init(
@@ -52,17 +69,6 @@ public struct MarkdownRenderer {
             var visitor = visitor
             return visitor.visit(document)
         }
-    }
-
-    // MARK: - Initialization - Internal
-
-    init(defaultElementsOverriddenBy overrides: [MarkdownElement], appearance: MarkdownAppearance) {
-        self.init(
-            visitors: MarkdownElement.visitors(
-                defaultElementsOverriddenBy: overrides,
-                appearance: appearance
-            )
-        )
     }
 
     // MARK: - Helper Methods - Public

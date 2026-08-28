@@ -10,7 +10,7 @@ import SwiftUI
 /// ```
 ///
 /// Links are interactive by default. To handle a tapped URL yourself, provide an
-/// ``SwiftUI/EnvironmentValues/openURL`` action:
+/// `openURL` environment action:
 ///
 /// ```swift
 /// MarkdownText(text: "Open [Settings](app://settings).")
