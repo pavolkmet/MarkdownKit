@@ -47,6 +47,51 @@ final class MarkdownDocumentTests: XCTestCase {
         )
     }
 
+    // MARK: - Tests - Hashable
+
+    func testDocumentsWithIdenticalSourcesAreEqualAndHaveEqualHashes() {
+        let first = MarkdownDocument(parsing: "Hello **world**")
+        let second = MarkdownDocument(parsing: "Hello **world**")
+
+        XCTAssertEqual(first, second)
+        XCTAssertEqual(first.hashValue, second.hashValue)
+    }
+
+    func testDocumentsWithDifferentSourcesRemainDistinctWhenRenderedOutputMatches() {
+        let asteriskStrong = MarkdownDocument(parsing: "Hello **world**")
+        let underscoreStrong = MarkdownDocument(parsing: "Hello __world__")
+
+        XCTAssertNotEqual(asteriskStrong, underscoreStrong)
+        XCTAssertEqual(
+            MarkdownRenderer().attributedString(from: asteriskStrong),
+            MarkdownRenderer().attributedString(from: underscoreStrong)
+        )
+    }
+
+    func testDocumentCanBeUsedAsSetAndDictionaryKey() {
+        let first = MarkdownDocument(parsing: "First")
+        let duplicate = MarkdownDocument(parsing: "First")
+        let second = MarkdownDocument(parsing: "Second")
+        let documents: Set = [first, duplicate, second]
+        var values: [MarkdownDocument: Int] = [:]
+        values[first] = 1
+        values[duplicate] = 2
+        values[second] = 3
+
+        XCTAssertEqual(documents, [first, second])
+        XCTAssertEqual(values.count, 2)
+        XCTAssertEqual(values[first], 2)
+        XCTAssertEqual(values[second], 3)
+    }
+
+    func testDecodedDocumentEqualsOriginalDocument() throws {
+        let original = MarkdownDocument(parsing: "Unicode #café 日本語")
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(MarkdownDocument.self, from: data)
+
+        XCTAssertEqual(decoded, original)
+    }
+
     // MARK: - Tests - Concurrency
 
     func testDocumentIsSendable() {

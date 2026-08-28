@@ -19,7 +19,11 @@ import Markdown
 /// The underlying `swift-markdown` tree is documented as an immutable, persistent, thread-safe,
 /// copy-on-write value. It is kept internal and immutable so this wrapper can safely provide
 /// `Sendable` behavior while `swift-markdown` does not declare that conformance itself.
-public struct MarkdownDocument: Codable, @unchecked Sendable {
+///
+/// Equality and hashing use the exact original source because the parsed tree is derived entirely
+/// from that value. Documents with identical rendered output but different Markdown source remain
+/// distinct.
+public struct MarkdownDocument: Codable, Hashable, @unchecked Sendable {
 
     // MARK: - Properties - Public
 
@@ -50,5 +54,19 @@ public struct MarkdownDocument: Codable, @unchecked Sendable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(source)
+    }
+
+    // MARK: - Equatable
+
+    /// Returns whether two documents contain the same original Markdown source.
+    public static func == (lhs: MarkdownDocument, rhs: MarkdownDocument) -> Bool {
+        lhs.source == rhs.source
+    }
+
+    // MARK: - Hashable
+
+    /// Hashes the original Markdown source that defines the document's identity.
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(source)
     }
 }

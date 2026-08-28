@@ -6,8 +6,8 @@ Parse Markdown during response decoding and render it later with the current pre
 
 ### Decode Markdown Directly
 
-`MarkdownDocument` decodes from and encodes to a single Markdown string. A response model can
-therefore store the parsed document directly:
+`MarkdownDocument` is `Codable`, `Hashable`, and `Sendable`. It decodes from and encodes to a single
+Markdown string, so a response model can store the parsed document directly:
 
 ```swift
 import MarkdownKit
@@ -47,6 +47,10 @@ let string = renderer.attributedString(from: response.text)
 
 This separation allows one parsed response to render with different appearances without reparsing
 its source.
+
+Equality and hashing use the exact original Markdown source. This makes documents safe dictionary
+keys and set members while keeping differently authored Markdown distinct, even when it produces
+the same rendered output.
 
 ### Manage Feed Lifetime in the Application
 

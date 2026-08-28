@@ -12,6 +12,7 @@ The project follows [Semantic Versioning](https://semver.org/).
 
 - Public `MarkdownRenderer(defaultElementsOverriddenBy:appearance:)` initialization for focused,
   ordered changes to the complete default visitor set.
+- `Hashable` conformance for `MarkdownDocument`, using its exact original source as identity.
 - GitHub-friendly Markdown guides covering setup, reusable documents, elements, visitors, SwiftUI
   configuration, application-owned processing, and supported Markdown nodes.
 - This release changelog.

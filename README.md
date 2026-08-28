@@ -8,7 +8,7 @@ visitor for every Markdown node, so applications can replace only the behavior t
 - One configurable visitor for every supported Markdown element
 - Markdown and unmarked-link detection, including custom URL schemes
 - Application-owned processing for hashtags, mentions, and routes
-- Reusable `Codable` and `Sendable` documents for background parsing
+- Reusable `Codable`, `Hashable`, and `Sendable` documents for background parsing
 - One package product and one import: `MarkdownKit`
 
 ## Requirements
@@ -96,8 +96,9 @@ elements. Use `elements:` when the array represents the complete supported selec
 
 ## Parse Once, Render Anywhere
 
-`MarkdownDocument` is a presentation-independent, `Codable`, and `Sendable` representation of
-parsed Markdown. Response models can store it directly when the server value is a Markdown string:
+`MarkdownDocument` is a presentation-independent, `Codable`, `Hashable`, and `Sendable`
+representation of parsed Markdown. Response models can store it directly when the server value is
+a Markdown string:
 
 ```swift
 struct PostResponse: Decodable, Sendable {
