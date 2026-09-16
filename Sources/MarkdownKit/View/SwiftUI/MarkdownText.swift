@@ -25,7 +25,7 @@ public struct MarkdownText: View {
 
     private enum Content {
         case text(String)
-        case document(Document)
+        case document(Markdown.Document)
         case markdownDocument(MarkdownDocument)
     }
 
@@ -67,7 +67,7 @@ public struct MarkdownText: View {
     /// Creates a view that renders an already parsed Markdown document with the default elements.
     ///
     /// - Parameter document: The parsed Markdown document to render.
-    public init(document: Document) {
+    public init(document: Markdown.Document) {
         self.content = .document(document)
         self.elements = .default
     }
@@ -77,7 +77,7 @@ public struct MarkdownText: View {
     /// - Parameters:
     ///   - document: The parsed Markdown document to render.
     ///   - elements: The baseline element configurations. Later environment overrides take precedence.
-    public init(document: Document, elements: [MarkdownElement] = MarkdownElement.defaults) {
+    public init(document: Markdown.Document, elements: [MarkdownElement] = MarkdownElement.defaults) {
         self.content = .document(document)
         self.elements = .explicit(elements)
     }
