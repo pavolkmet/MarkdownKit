@@ -54,6 +54,9 @@ public struct MarkdownRenderer {
     }
 
     /// Creates a renderer backed by individually replaceable element visitors.
+    ///
+    /// Kept out of line so optimized clients do not inline the `swift-markdown` visitor call.
+    @inline(never)
     public init(visitors: MarkdownMarkupVisitors) {
         let visitor = MarkdownAttributedMarkupVisitor(visitors: visitors)
 
@@ -64,6 +67,9 @@ public struct MarkdownRenderer {
     }
 
     /// Creates a renderer that completely replaces MarkdownKit's visitor.
+    ///
+    /// Kept out of line so optimized clients do not inline the `swift-markdown` visitor call.
+    @inline(never)
     public init<Visitor: MarkupVisitor>(visitor: Visitor) where Visitor.Result == AttributedString {
         self.renderDocument = { document in
             var visitor = visitor
@@ -74,6 +80,9 @@ public struct MarkdownRenderer {
     // MARK: - Helper Methods - Public
 
     /// Parses Markdown source and returns its rendered attributed string.
+    ///
+    /// Kept out of line so optimized clients do not inline the `swift-markdown` parser call.
+    @inline(never)
     public func attributedString(from text: String) -> AttributedString {
         attributedString(from: Document(parsing: text))
     }

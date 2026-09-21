@@ -37,6 +37,11 @@ public struct MarkdownDocument: Codable, Hashable, @unchecked Sendable {
     // MARK: - Initialization - Public
 
     /// Parses Markdown source into a reusable document.
+    ///
+    /// Kept out of line so optimized clients call MarkdownKit instead of inlining the
+    /// `swift-markdown` parser call, which would leave them with an undefined `Markdown` symbol
+    /// when they link only the `MarkdownKit` product.
+    @inline(never)
     public init(parsing source: String) {
         self.source = source
         self.document = Document(parsing: source)

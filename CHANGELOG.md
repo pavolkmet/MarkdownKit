@@ -6,6 +6,17 @@ The project follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## 1.3.2 - 2026-09-21
+
+### Fixed
+
+- Optimized (Release) clients that link only the `MarkdownKit` product, such as dynamic framework
+  targets in an Xcode project, no longer fail to link with an undefined
+  `Markdown.Document.init(parsing:source:options:)` symbol. `MarkdownDocument(parsing:)`,
+  `MarkdownRenderer.attributedString(from:)` for source text, and the visitor-based
+  `MarkdownRenderer` initializers are now kept out of line, so cross-module optimization no longer
+  inlines their `swift-markdown` calls into client code. Public API and behavior are unchanged.
+
 ## 1.3.0 - 2026-08-28
 
 ### Added
@@ -42,7 +53,8 @@ The project follows [Semantic Versioning](https://semver.org/).
 - Background parsing, concurrent rendering, and source-preserving Codable tests.
 - Complete SwiftUI environment documentation and a reusable-document example.
 
-[Unreleased]: https://github.com/pavolkmet/MarkdownKit/compare/1.3.0...HEAD
+[Unreleased]: https://github.com/pavolkmet/MarkdownKit/compare/1.3.2...HEAD
+[1.3.2]: https://github.com/pavolkmet/MarkdownKit/compare/1.3.1...1.3.2
 [1.3.0]: https://github.com/pavolkmet/MarkdownKit/compare/1.2.0...1.3.0
 [1.2.0]: https://github.com/pavolkmet/MarkdownKit/releases/tag/1.2.0
 [1.1.0]: https://github.com/pavolkmet/MarkdownKit/releases/tag/1.1.0
