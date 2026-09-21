@@ -17,6 +17,14 @@ The project follows [Semantic Versioning](https://semver.org/).
   `MarkdownRenderer` initializers are now kept out of line, so cross-module optimization no longer
   inlines their `swift-markdown` calls into client code. Public API and behavior are unchanged.
 
+## 1.3.1 - 2026-09-16
+
+### Fixed
+
+- Qualified the parsed document type in `MarkdownText` as `Markdown.Document`, resolving an
+  ambiguity with SwiftUI's `Document` type when building with Xcode 27. Public API and behavior are
+  unchanged.
+
 ## 1.3.0 - 2026-08-28
 
 ### Added
@@ -55,6 +63,7 @@ The project follows [Semantic Versioning](https://semver.org/).
 
 [Unreleased]: https://github.com/pavolkmet/MarkdownKit/compare/1.3.2...HEAD
 [1.3.2]: https://github.com/pavolkmet/MarkdownKit/compare/1.3.1...1.3.2
+[1.3.1]: https://github.com/pavolkmet/MarkdownKit/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/pavolkmet/MarkdownKit/compare/1.2.0...1.3.0
 [1.2.0]: https://github.com/pavolkmet/MarkdownKit/releases/tag/1.2.0
 [1.1.0]: https://github.com/pavolkmet/MarkdownKit/releases/tag/1.1.0

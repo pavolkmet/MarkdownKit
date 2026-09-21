@@ -26,7 +26,7 @@ Add MarkdownKit through Swift Package Manager:
 dependencies: [
     .package(
         url: "https://github.com/pavolkmet/MarkdownKit.git",
-        from: "1.3.0"
+        from: "1.3.2"
     ),
 ]
 ```
